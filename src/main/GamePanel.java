@@ -4,15 +4,20 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import entity.Player;
+
 
 public class GamePanel extends JPanel implements Runnable{
 	//Screen Settings
 	final int originalTileSize = 16; //16x16 tile
 	final int scale = 3;
+	BufferedImage background;
 	
 	public int tileSize = originalTileSize * scale; //48x48 tile
 	final int maxScreenCol = 16;
@@ -38,6 +43,7 @@ public class GamePanel extends JPanel implements Runnable{
 		this.setDoubleBuffered(true);
 		this.addKeyListener(keyH);
 		this.setFocusable(true);
+		loadBackgroundImage();
 	}
 	
 	public void startGameThread() {
@@ -81,16 +87,25 @@ public class GamePanel extends JPanel implements Runnable{
 	public void update() {
 		player.update();
 	}
+
+	public void loadBackgroundImage() {
+    try {
+		background = ImageIO.read(getClass().getResourceAsStream("/res/background/tempBackground.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
 		Graphics2D g2 = (Graphics2D)g;
-		
+		g2.drawImage(background, 0, 0, getWidth(), getHeight(), null);
 		player.draw(g2);
 		
 		g2.dispose();
 		
 	}
+
 
 }
